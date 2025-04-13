@@ -9,8 +9,10 @@ import { VERSION, PACKAGE_NAME } from './utils/constants.util.js';
 import { runCli } from './cli/index.js';
 
 // Import tools and resources
-import ipAddressTools from './tools/ipaddress.tool.js';
-import ipLookupResources from './resources/ipaddress.resource.js';
+// import ipAddressTools from './tools/ipaddress.tool.js';
+// import ipLookupResources from './resources/ipaddress.resource.js';
+import codingCloudApiTools from './tools/coding-cloud-api.tool.js';
+import codingCloudApiResources from './resources/coding-cloud-api.resource.js';
 
 /**
  * Boilerplate MCP Server
@@ -70,11 +72,15 @@ export async function startServer(mode: 'stdio' | 'sse' = 'stdio') {
 	// Register tools and resources
 	serverLogger.info('Registering MCP tools and resources...');
 
-	ipAddressTools.registerTools(serverInstance);
+	codingCloudApiTools.registerTools(serverInstance);
+	// ipAddressTools.registerTools(serverInstance);
 	serverLogger.debug('Registered IP address tools');
 
-	ipLookupResources.registerResources(serverInstance);
+	// ipLookupResources.registerResources(serverInstance);
 	serverLogger.debug('Registered IP lookup resources');
+
+	codingCloudApiResources.registerResources(serverInstance);
+	serverLogger.debug('Registered Coding Cloud API resources');
 
 	serverLogger.info('All tools and resources registered successfully');
 

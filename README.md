@@ -1,6 +1,6 @@
-# Boilerplate MCP Server
+# Coding-Cloud MCP Server
 
-This project serves as a foundation for developing custom Model Context Protocol (MCP) servers that connect AI assistants to external data sources or APIs. It provides a complete architecture pattern, a working example tool, and development infrastructure ready for extension.
+This project provides a Model Context Protocol (MCP) server allowing AI assistants to securely connect with and retrieve information from Coding-Cloud.com, specifically focusing on searching for and accessing code snippets.
 
 ---
 
@@ -8,21 +8,15 @@ This project serves as a foundation for developing custom Model Context Protocol
 
 ## What is MCP?
 
-Model Context Protocol (MCP) is an open standard that allows AI systems to securely and contextually connect with external tools and data sources.
+Model Context Protocol (MCP) is an open standard allowing AI systems to securely connect with external tools like Coding-Cloud.com. This server enables AI agents to interact with Coding-Cloud's code snippet database.
 
-This boilerplate implements the MCP specification with a clean, layered architecture that can be extended to build custom MCP servers for any API or data source.
+## Features
 
-## Why Use This Boilerplate?
-
-- **Production-Ready Architecture**: Follows the same pattern used in published MCP servers, with clear separation between CLI, tools, controllers, and services.
-
-- **Type Safety**: Built with TypeScript for improved developer experience, code quality, and maintainability.
-
-- **Working Example**: Includes a fully implemented IP lookup tool demonstrating the complete pattern from CLI to API integration.
-
-- **Testing Framework**: Comes with testing infrastructure for both unit and CLI integration tests, including coverage reporting.
-
-- **Development Tooling**: Includes ESLint, Prettier, TypeScript, and other quality tools preconfigured for MCP server development.
+-   **Coding-Cloud Integration**: Tools for AI agents to search and retrieve code snippets.
+-   **Production-Ready Architecture**: Clean, layered architecture based on a proven pattern.
+-   **Type Safety**: Built with TypeScript.
+-   **Testing Framework**: Includes unit and CLI integration tests.
+-   **Development Tooling**: Preconfigured ESLint, Prettier, TypeScript.
 
 ---
 
@@ -30,344 +24,108 @@ This boilerplate implements the MCP specification with a clean, layered architec
 
 ## Prerequisites
 
-- **Node.js** (>=18.x): [Download](https://nodejs.org/)
-- **Git**: For version control
-
----
+-   **Node.js** (>=18.x): [Download](https://nodejs.org/)
+-   **Git**
 
 ## Step 1: Clone and Install
 
 ```bash
-# Clone the repository
-git clone https://github.com/aashari/boilerplate-mcp-server.git
-cd boilerplate-mcp-server
+# Clone the repository (Update URL if needed)
+git clone https://github.com/<YOUR_GITHUB_USERNAME>/coding-cloud-mcp-server.git
+cd coding-cloud-mcp-server
 
 # Install dependencies
 npm install
 ```
 
----
-
 ## Step 2: Run Development Server
-
-Start the server in development mode:
 
 ```bash
 npm run dev:server
 ```
 
-This starts the MCP server with hot-reloading and enables the MCP Inspector at http://localhost:5173.
+Access the MCP Inspector at http://localhost:5173.
 
----
-
-## Step 3: Test the Example Tool
-
-Run the example IP lookup tool from the CLI:
+## Step 3: Test the Coding-Cloud Tool (CLI)
 
 ```bash
-# Using CLI in development mode
-npm run dev:cli -- get-ip-details
+# Example: Search for snippets
+npm run dev:cli -- search-code-snippets "javascript async await"
 
-# Or with a specific IP
-npm run dev:cli -- get-ip-details 8.8.8.8
+# Example: Search with language filter
+npm run dev:cli -- search-code-snippets "python dictionary comprehension" --language python
+
+# Example: Get snippet details (if implemented)
+# npm run dev:cli -- get-snippet-details <snippet_id>
 ```
 
----
+(Adjust commands based on your actual CLI implementation)
 
 # Architecture
 
-This boilerplate follows a clean, layered architecture pattern that separates concerns and promotes maintainability.
-
-## Project Structure
+Uses a layered architecture: CLI -> Tools -> Controllers -> Services.
 
 ```
 src/
 ├── cli/              # Command-line interfaces
 ├── controllers/      # Business logic
-├── services/         # External API interactions
-├── tools/            # MCP tool definitions
+├── services/         # External API interactions (Coding-Cloud API)
+├── tools/            # MCP tool definitions (search, get details)
 ├── types/            # Type definitions
-├── utils/            # Shared utilities
+├── utils/            # Shared utilities (logging, errors, formatting)
 └── index.ts          # Entry point
 ```
 
-## Layers and Responsibilities
-
-### CLI Layer (`src/cli/*.cli.ts`)
-
-- **Purpose**: Define command-line interfaces that parse arguments and call controllers
-- **Naming**: Files should be named `<feature>.cli.ts`
-- **Testing**: CLI integration tests in `<feature>.cli.test.ts`
-
-### Tools Layer (`src/tools/*.tool.ts`)
-
-- **Purpose**: Define MCP tools with schemas and descriptions for AI assistants
-- **Naming**: Files should be named `<feature>.tool.ts` with types in `<feature>.types.ts`
-- **Pattern**: Each tool should use zod for argument validation
-
-### Controllers Layer (`src/controllers/*.controller.ts`)
-
-- **Purpose**: Implement business logic, handle errors, and format responses
-- **Naming**: Files should be named `<feature>.controller.ts`
-- **Pattern**: Should return standardized `ControllerResponse` objects
-
-### Services Layer (`src/services/*.service.ts`)
-
-- **Purpose**: Interact with external APIs or data sources
-- **Naming**: Files should be named `<feature>.service.ts`
-- **Pattern**: Pure API interactions with minimal logic
-
-### Utils Layer (`src/utils/*.util.ts`)
-
-- **Purpose**: Provide shared functionality across the application
-- **Key Utils**:
-    - `logger.util.ts`: Structured logging
-    - `error.util.ts`: Error handling and standardization
-    - `formatter.util.ts`: Markdown formatting helpers
-
----
-
 # Development Guide
 
-## Development Scripts
+## Common Scripts
 
 ```bash
-# Start server in development mode (hot-reload & inspector)
+# Start dev server (hot-reload & inspector)
 npm run dev:server
 
-# Run CLI in development mode
+# Run CLI command in dev mode
 npm run dev:cli -- [command] [args]
 
-# Build the project
+# Build for production
 npm run build
 
-# Start server in production mode
+# Start production server
 npm run start:server
 
-# Run CLI in production mode
+# Run CLI command in production mode
 npm run start:cli -- [command] [args]
-```
 
-## Testing
-
-```bash
 # Run all tests
 npm test
 
-# Run specific tests
-npm test -- src/path/to/test.ts
-
-# Generate test coverage report
+# Generate test coverage
 npm run test:coverage
-```
 
-## Code Quality
-
-```bash
 # Lint code
 npm run lint
 
-# Format code with Prettier
+# Format code
 npm run format
 
-# Check types
+# Type check
 npm run typecheck
 ```
 
----
+## Debugging Tools
 
-# Building Custom Tools
+### MCP Inspector
+Run `npm run dev:server` and open http://localhost:5173. Test tools and view logs in the UI.
 
-Follow these steps to add your own tools to the server:
-
-## 1. Define Service Layer
-
-Create a new service in `src/services/` to interact with your external API:
-
-```typescript
-// src/services/example.service.ts
-import { Logger } from '../utils/logger.util.js';
-
-const logger = Logger.forContext('services/example.service.ts');
-
-export async function getData(param: string): Promise<any> {
-	logger.debug('Getting data', { param });
-	// API interaction code here
-	return { result: 'example data' };
-}
-```
-
-## 2. Create Controller
-
-Add a controller in `src/controllers/` to handle business logic:
-
-```typescript
-// src/controllers/example.controller.ts
-import { Logger } from '../utils/logger.util.js';
-import * as exampleService from '../services/example.service.js';
-import { formatMarkdown } from '../utils/formatter.util.js';
-import { handleControllerError } from '../utils/error-handler.util.js';
-import { ControllerResponse } from '../types/common.types.js';
-
-const logger = Logger.forContext('controllers/example.controller.ts');
-
-export interface GetDataOptions {
-	param?: string;
-}
-
-export async function getData(
-	options: GetDataOptions = {},
-): Promise<ControllerResponse> {
-	try {
-		logger.debug('Getting data with options', options);
-
-		const data = await exampleService.getData(options.param || 'default');
-
-		const content = formatMarkdown(data);
-
-		return { content };
-	} catch (error) {
-		throw handleControllerError(error, {
-			entityType: 'ExampleData',
-			operation: 'getData',
-			source: 'controllers/example.controller.ts',
-		});
-	}
-}
-```
-
-## 3. Implement MCP Tool
-
-Create a tool definition in `src/tools/`:
-
-```typescript
-// src/tools/example.tool.ts
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
-import { Logger } from '../utils/logger.util.js';
-import { formatErrorForMcpTool } from '../utils/error.util.js';
-import * as exampleController from '../controllers/example.controller.js';
-
-const logger = Logger.forContext('tools/example.tool.ts');
-
-const GetDataArgs = z.object({
-	param: z.string().optional().describe('Optional parameter'),
-});
-
-type GetDataArgsType = z.infer<typeof GetDataArgs>;
-
-async function handleGetData(args: GetDataArgsType) {
-	try {
-		logger.debug('Tool get_data called', args);
-
-		const result = await exampleController.getData({
-			param: args.param,
-		});
-
-		return {
-			content: [{ type: 'text' as const, text: result.content }],
-		};
-	} catch (error) {
-		logger.error('Tool get_data failed', error);
-		return formatErrorForMcpTool(error);
-	}
-}
-
-export function register(server: McpServer) {
-	server.tool(
-		'get_data',
-		`PURPOSE: Get data from the example API.
-     RETURNS: Markdown with formatted data.
-     EXAMPLES: { "param": "value" }`,
-		GetDataArgs.shape,
-		handleGetData,
-	);
-}
-```
-
-## 4. Add CLI Support
-
-Create a CLI command in `src/cli/`:
-
-```typescript
-// src/cli/example.cli.ts
-import { program } from 'commander';
-import { Logger } from '../utils/logger.util.js';
-import * as exampleController from '../controllers/example.controller.js';
-import { handleCliError } from '../utils/error-handler.util.js';
-
-const logger = Logger.forContext('cli/example.cli.ts');
-
-program
-	.command('get-data')
-	.description('Get example data')
-	.option('--param <value>', 'Optional parameter')
-	.action(async (options) => {
-		try {
-			logger.debug('CLI get-data called', options);
-
-			const result = await exampleController.getData({
-				param: options.param,
-			});
-
-			console.log(result.content);
-		} catch (error) {
-			handleCliError(error);
-		}
-	});
-```
-
-## 5. Register Components
-
-Update the entry points to register your new components:
-
-```typescript
-// In src/cli/index.ts
-import '../cli/example.cli.js';
-
-// In src/index.ts (for the tool)
-import exampleTool from './tools/example.tool.js';
-// Then in registerTools function:
-exampleTool.register(server);
-```
-
----
-
-# Debugging Tools
-
-## MCP Inspector
-
-Access the visual MCP Inspector to test your tools and view request/response details:
-
-1. Run `npm run dev:server`
-2. Open http://localhost:5173 in your browser
-3. Test your tools and view logs directly in the UI
-
-## Server Logs
-
-Enable debug logs for development:
-
-```bash
-# Set environment variable
-DEBUG=true npm run dev:server
-
-# Or configure in ~/.mcp/configs.json
-```
-
----
-
-# Publishing Your MCP Server
-
-When ready to publish your custom MCP server:
-
-1. Update package.json with your details
-2. Update README.md with your tool documentation
-3. Build the project: `npm run build`
-4. Test the production build: `npm run start:server`
-5. Publish to npm: `npm publish`
-
----
+### Server Logs
+Enable debug logs: `DEBUG=true npm run dev:server` or configure in `~/.mcp/configs.json`.
 
 # License
 
-[ISC License](https://opensource.org/licenses/ISC)
+This project is licensed under the ISC License.
+
+Copyright <YEAR> <OWNER> (<- Update this line)
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
